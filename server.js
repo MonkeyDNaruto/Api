@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const https = require("https");
+const { STATUS_CODES } = require("http");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -34,18 +35,27 @@ app.post("/", (req, res) => {
 
     const options = {
         method: "POST",
-        auth: "Nischal:8c23f836a63f444483f8cb3d38269f06-us12"
+        auth: "Nischal:655627edf6b2cb5761f2dc3f36a3b7fc-us12"
     }
 
     const request = https.request(url, options, (response) => {
         response.on("data", (data) => {
-            console.log(JSON.parse(data));
+
+            if (response.statusCode === 200) {
+                res.sendFile(__dirname + "/sucess.html");
+            } else {
+                res.sendFile(__dirname + "/failure.html");
+            };
         })
     })
 
     request.write(jsonData);
     request.end();
 
+});
+
+app.post("/failure", (req, res) => {
+    res.redirect("/")
 })
 
 app.listen(3000, (req, res) => {
@@ -53,7 +63,7 @@ app.listen(3000, (req, res) => {
 })
 
 // API key
-// 8c23f836a63f444483f8cb3d38269f06-us12
+// 655627edf6b2cb5761f2dc3f36a3b7fc-us12
 
 // List id
 // 08da7ae232
